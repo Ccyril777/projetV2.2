@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Form Create{% endblock %}
+
+{% block body %}
+
+    <h1>Formulaire</h1>
+
+    <form action="" method="POST">
+        <input type='text' name='Usual Name'>
+        <input type='text' name='Sii Name'>
+        <textarea name="content"></textarea>
+        <input type='text' name='Confidentialite'>
+        <input type='text' name='Domaine'>
+        <input type='text' name='Type'>
+        <input type='text' name='Color'>
+        <button type="submit">Valider</button>
+    </form>
+
+{% endblock %}

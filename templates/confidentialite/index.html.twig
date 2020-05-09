@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confidentialite index{% endblock %}
+
+{% block body %}
+    <h1>Confidentialite index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>ConfidentialiteName</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for confidentialite in confidentialites %}
+            <tr>
+                <td>{{ confidentialite.id }}</td>
+                <td>{{ confidentialite.confidentialiteName }}</td>
+                <td>
+                    <a href="{{ path('confidentialite_show', {'id': confidentialite.id}) }}">show</a>
+                    <a href="{{ path('confidentialite_edit', {'id': confidentialite.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('confidentialite_new') }}">Create new</a>
+{% endblock %}

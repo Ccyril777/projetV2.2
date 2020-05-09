@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TestController!{% endblock %}
+
+{% block body %}
+
+<button id='addRow' >Ajouter une ligne</button><br/><br/>
+
+<div id="myGrid" style="height: 50rem; width:150rem;" class="ag-theme-balham"></div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ asset('jsuite/jsuites.js') }}"></script>
+<script src="{{ asset('aggrid/ag-grid-enterprise.min.js') }}"></script>
+<script src="{{ asset('aggrid/main.js') }}"></script>
+
+<script>
+function DomEditor() {
+	this.data = [
+		{% for domaine in domaines %}
+		{ id:'{{ domaine.id }}', name:'{{ domaine.domaineName }}' },
+		{% endfor %}
+	];
+}
+
+DomEditor.prototype = new ObjectEditor();
+</script>
+
+<script>
+function ConfEditor() {
+	this.data = [
+		{% for confidentialite in confidentialites %}
+		{ id:'{{ confidentialite.id }}', name:'{{ confidentialite.confidentialiteName }}' },
+		{% endfor %}
+	];
+}
+
+ConfEditor.prototype = new ObjectEditor();
+</script>
+
+<script>
+function TypoEditor() {
+	this.data = [
+		{% for type in types %}
+		{ id:'{{ type.id }}', name:'{{ type.shortName }}' },
+		{% endfor %}
+	];
+}
+
+TypoEditor.prototype = new ObjectEditor();
+</script>
+
+<script>
+function SupEditor() {
+	this.data = [
+		{% for systeme_information in systeme_informations %}
+		{ id:'{{ systeme_information.id }}', name:'{{ systeme_information.usualName }}' },
+		{% endfor %}
+	];
+}
+
+SupEditor.prototype = new ObjectEditor();
+</script>
+
+<script>
+
+var columns = [
+	{headerName: 'ID', field: 'id', sortable: true, filter: true, editable: true},
+	{headerName: 'Nom usuel', field: 'usual_name', sortable: true, filter: true, editable: true},
+	{headerName: 'Nom SII', field: 'sii_name', sortable: true, filter: true, editable: true},
+	{headerName: 'Description', field: 'description', sortable: true, filter: true, editable: true},
+	{headerName: 'Confidentialité', field: 'confidentialite', sortable: true, filter: true, editable: true, cellRenderer: ObjectCellRenderer,cellEditor: ConfEditor},
+    {headerName: 'Typologie MI', field: 'typology', sortable: true, filter: true, editable: true, cellRenderer: ObjectCellRenderer,cellEditor: TypoEditor},
+    {headerName: 'Domaine', field: 'domaine', sortable: true, filter: true, editable: true, cellRenderer: ObjectCellRenderer,cellEditor: DomEditor},
+    {headerName: 'SI Support', field: 'si_support', sortable: true, filter: true, editable: true, cellRenderer: ObjectCellRenderer,cellEditor: SupEditor}
+];
+
+var gridOptions = {
+    columnDefs: columns,
+	rowData: [
+		{% for systeme_information in systeme_informations %}
+		{id:'{{ systeme_information.id }}',
+		usual_name: '{{ systeme_information.usualName }}',
+		sii_name: '{{ systeme_information.siiName }}',
+        description:'{{ systeme_information.description }}',
+		domaine: {'id':'{{ systeme_information.domaine.id }}', 'val':'{{ systeme_information.domaine.domaineName }}' },
+        confidentialite: {'id':'{{ systeme_information.confidentialite.id }}', 'val':'{{ systeme_information.confidentialite.confidentialiteName }}' },
+		typology: {'id':'{{ systeme_information.type.id }}', 'val':'{{ systeme_information.type.shortName }}' },
+		},
+		{% endfor %}
+	]
+};
+</script>
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('aggrid/endmain.js') }}"></script>
+
+{% endblock %}

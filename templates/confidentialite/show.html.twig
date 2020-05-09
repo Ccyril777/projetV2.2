@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confidentialite{% endblock %}
+
+{% block body %}
+    <h1>Confidentialite</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ confidentialite.id }}</td>
+            </tr>
+            <tr>
+                <th>ConfidentialiteName</th>
+                <td>{{ confidentialite.confidentialiteName }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('confidentialite_index') }}">back to list</a>
+
+    <a href="{{ path('confidentialite_edit', {'id': confidentialite.id}) }}">edit</a>
+
+    {{ include('confidentialite/_delete_form.html.twig') }}
+{% endblock %}

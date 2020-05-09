@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New SystemeInformation{% endblock %}
+
+{% block body %}
+    <h1>Create new SystemeInformation</h1>
+
+    {{ include('systeme_information/_form.html.twig') }}
+
+    <a href="{{ path('systeme_information_index') }}">back to list</a>
+{% endblock %}

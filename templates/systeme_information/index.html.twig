@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SystemeInformation index{% endblock %}
+
+{% block body %}
+    <h1>SystemeInformation index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>UsualName</th>
+                <th>SiiName</th>
+                <th>Description</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for systeme_information in systeme_informations %}
+            <tr>
+                <td>{{ systeme_information.id }}</td>
+                <td>{{ systeme_information.usualName }}</td>
+                <td>{{ systeme_information.siiName }}</td>
+                <td>{{ systeme_information.description }}</td>
+                <td>
+                    <a href="{{ path('systeme_information_show', {'id': systeme_information.id}) }}">show</a>
+                    <a href="{{ path('systeme_information_edit', {'id': systeme_information.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('systeme_information_new') }}">Create new</a>
+{% endblock %}

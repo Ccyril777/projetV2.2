@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Confidentialite{% endblock %}
+
+{% block body %}
+    <h1>Create new Confidentialite</h1>
+
+    {{ include('confidentialite/_form.html.twig') }}
+
+    <a href="{{ path('confidentialite_index') }}">back to list</a>
+{% endblock %}
