@@ -122,7 +122,6 @@ var columnDefs = [
 var gridOptions = {
     columnDefs: columns,
 	rowData: [],
-	
 };
 
 console.log('Ici');

@@ -58,7 +58,6 @@ class SystemeInformationController extends AbstractController
             'types' => $typologyMIRepository->findAll(),
             'form'=>$si,
         ]);
-
 }
     /**
      * @Route("/new", name="systeme_information_new", methods={"GET","POST"})
