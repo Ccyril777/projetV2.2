@@ -6,6 +6,14 @@
 
 <button id='addRow' >Ajouter une ligne</button><br/><br/>
 
+<button type="button" onclick="description()">Cliquez moi</button>
+<form method="POST">
+<textarea id="affichage" name='Description'></textarea>
+<button type="submit">Valider</button>
+</form>
+
+{{ form.Description }}
+
 <div id="myGrid" style="height: 50rem; width:150rem;" class="ag-theme-balham"></div>
 
 {% endblock %}
@@ -89,8 +97,14 @@ var gridOptions = {
 		typology: {'id':'{{ systeme_information.type.id }}', 'val':'{{ systeme_information.type.shortName }}' },
 		},
 		{% endfor %}
-	]
+	],
+
+	onCellValueChanged: function(event) {
+		document.getElementById("affichage").innerHTML += JSON.stringify(event.data)+",";
+		console.log('Data after change is', event.data);
+	  },
 };
+
 </script>
 {% endblock %}
 

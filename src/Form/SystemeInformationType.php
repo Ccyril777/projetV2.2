@@ -3,6 +3,9 @@
 namespace App\Form;
 
 use App\Entity\SystemeInformation;
+use App\Entity\Confidentialite;
+use App\Entity\Domaine;
+use App\Entity\TypologyMI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,9 +18,9 @@ class SystemeInformationType extends AbstractType
             ->add('usualName')
             ->add('siiName')
             ->add('description')
-            ->add('confidentialite')
-            ->add('domaine')
-            ->add('type')
+            ->add('confidentialite', null, ['choice_label' => 'confidentialiteName'])
+            ->add('domaine', null, ['choice_label' => 'DomaineName'])
+            ->add('type', null, ['choice_label' => 'shortName'])
         ;
     }
 

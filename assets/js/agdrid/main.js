@@ -121,9 +121,11 @@ var columnDefs = [
 
 var gridOptions = {
     columnDefs: columns,
-    rowData: [],
-    editable,
+	rowData: [],
+	
 };
+
+console.log('Ici');
 
 new agGrid.Grid(document.querySelector('#myGrid'), gridOptions);
 

@@ -35,18 +35,31 @@ class SystemeInformationController extends AbstractController
     /**
      * @Route("/aggridview", name="aggridview", methods={"GET","POST"})
      */
-    public function aggrid(SystemeInformationRepository $systemeInformationRepository, 
-                            DomaineRepository $domaineRepository, 
+    public function aggrid(SystemeInformationRepository $systemeInformationRepository,
+                            DomaineRepository $domaineRepository,
                             ConfidentialiteRepository $confidentialiteRepository,
-                            TypologyMIRepository $typologyMIRepository): response
-    {
+                            TypologyMIRepository $typologyMIRepository,
+                            Request $request): response
+{
+    $manager = $this->getDoctrine()->getManager();
+    $si = new SystemeInformation();
+
+    echo  "Count = " . $request->request->count();
+    echo "Description = " . $request->request->get('Description');
+
+    if ($request->request->count()>0){
+
+        $si->setDescription($request->request->get('Description'));
+}
         return $this->render('ag-grid.html.twig', [
             'systeme_informations' => $systemeInformationRepository->findAll(),
             'domaines' => $domaineRepository->findAll(),
             'confidentialites' => $confidentialiteRepository->findAll(),
             'types' => $typologyMIRepository->findAll(),
+            'form'=>$si,
         ]);
-    }
+
+}
     /**
      * @Route("/new", name="systeme_information_new", methods={"GET","POST"})
      */
@@ -73,23 +86,31 @@ class SystemeInformationController extends AbstractController
     /**
      * @Route("/form/create", name="form_create")
      */
-    public function create(Request $request, ObjectManager $manager) {
+    public function create(Request $request,
+                            DomaineRepository $domaineRepository,
+                            ConfidentialiteRepository $confidentialiteRepository,
+                            TypologyMIRepository $typologyMIRepository): response
+                            {
+        $manager = $this->getDoctrine()->getManager();
+        $si = new SystemeInformation();
+        $si->setUsualName("default");
+        echo "Request = " . $request->request->count();
 
         if ($request->request->count()>0){
-            $usualName = new SystemeInformation();
-            $usualName->setUsualName($request->request->get('usualName'))
-                    ->setSiiName($request->request->get('SiiName'))
-                    ->setDescription($request->request->get('Description'))
-                    ->setConfidentialite($request->request->get('confidentialiteName'))
-                    ->setDomaine($request->request->get('domaineName'))
-                    ->setTypologyMI($request->request->get('shotName'))
-                    ->setTypologyMI($request->request->get('longName'))
-                    ->setCreateAt(new \DateTime());
 
-            $manager->persist($usualName);
-            $manager->flush();
-        }
-        return $this->render('form/create.html.twig');
+            $si->setUsualName($request->request->get('usualName'))
+                    ->setSiiName($request->request->get('SiiName'))
+                    ->setDescription($request->request->get('Description'));
+
+                    // ->setConfidentialite($request->request->get('confidentialiteName'))
+                    // ->setDomaine($request->request->get('domaineName'))
+                    // ->setTypologyMI($request->request->get('shortName'))
+                    // ->($request->request->get('longName'))
+            // $manager->persist($usualName);
+            // $manager->flush();
+
+    }
+        return $this->render('form/create.html.twig',['form'=>$si]);
     }
 
     /**
