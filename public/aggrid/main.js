@@ -83,3 +83,8 @@ var onKeyDown = function(event) {
 	}
 };
 
+function description() {
+
+	document.getElementById("affichage").innerHTML += "toto ";
+ }
+
