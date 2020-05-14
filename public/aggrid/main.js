@@ -43,7 +43,7 @@ ObjectEditor.prototype.init = function (params) {
 		data:this.data,
 		type:'default',
 		autocomplete:true,
-		multiple:true
+		multiple:false,
 	});
 
 	if (params.value) {

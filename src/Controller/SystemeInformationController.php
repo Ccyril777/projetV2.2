@@ -44,12 +44,48 @@ class SystemeInformationController extends AbstractController
     $manager = $this->getDoctrine()->getManager();
     $si = new SystemeInformation();
 
-    echo  "Count = " . $request->request->count();
-    echo "Description = " . $request->request->get('Description');
+    echo  "Count = " . $request->request->count() ."<br>";
+    $desc = "{\"list\":[" . $request->request->get('Description')."]}";
+
+    echo "Description = " . $desc ."<br>";
 
     if ($request->request->count()>0){
+        $object = json_decode($desc);
+        $maliste = $object->{'list'};
+        foreach($maliste as $rowAgrid) {
 
-        $si->setDescription($request->request->get('Description'));
+        $si = $systemeInformationRepository->findOneById($rowAgrid->{'id'});
+
+        echo "oldName = " . $si->getUsualName() ."<br>";
+        echo "newName = " . $rowAgrid->{'usual_name'} ."<br>";
+        $si->setUsualName($rowAgrid->{'usual_name'});
+
+        echo "oldSiiName = " . $si->getSiiName() ."<br>";
+        echo "newSiiName = " . $rowAgrid->{'sii_name'} ."<br>";
+        $si->setSiiName($rowAgrid->{'sii_name'});
+
+        echo "oldDescription = " . $si->getDescription() ."<br>";
+        echo "newDescription = " . $rowAgrid->{'description'} ."<br>";
+        $si->setDescription($rowAgrid->{'description'});
+
+        echo "oldConfidentialité = " . $si->getConfidentialite()->getId() ."<br>";
+        echo "newConfidentialité = " . $rowAgrid->{'confidentialite'}->{'id'} ."<br>";
+        $newconf = $confidentialiteRepository->findOneById($rowAgrid->{'confidentialite'}->{'id'});
+        $si->setConfidentialite($newconf);
+
+        echo "oldDomaine = " . $si->getDomaine()->getId() ."<br>";
+        echo "newDomaine = " . $rowAgrid->{'domaine'}->{'id'} ."<br>";
+        $newdomaine = $domaineRepository->findOneById($rowAgrid->{'domaine'}->{'id'});
+        $si->setDomaine($newdomaine);
+
+        echo "oldType = " . $si->getType()->getId() ."<br>";
+        echo "newType = " . $rowAgrid->{'typology'}->{'id'} ."<br>";
+        $newtype = $typologyMIRepository->findOneById($rowAgrid->{'typology'}->{'id'});
+        $si->setType($newtype);
+
+        $manager->persist($si);
+        $manager->flush();
+        }
 }
         return $this->render('ag-grid.html.twig', [
             'systeme_informations' => $systemeInformationRepository->findAll(),
@@ -89,14 +125,8 @@ class SystemeInformationController extends AbstractController
                             DomaineRepository $domaineRepository,
                             ConfidentialiteRepository $confidentialiteRepository,
                             TypologyMIRepository $typologyMIRepository): response
-                            {
-        $manager = $this->getDoctrine()->getManager();
-        $si = new SystemeInformation();
-        $si->setUsualName("default");
-        echo "Request = " . $request->request->count();
-
+                            {echo "Json = " . $MyJSON;
         if ($request->request->count()>0){
-
             $si->setUsualName($request->request->get('usualName'))
                     ->setSiiName($request->request->get('SiiName'))
                     ->setDescription($request->request->get('Description'));

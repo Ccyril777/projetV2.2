@@ -100,7 +100,14 @@ var gridOptions = {
 	],
 
 	onCellValueChanged: function(event) {
-		document.getElementById("affichage").innerHTML += JSON.stringify(event.data)+",";
+		
+		if(document.getElementById("affichage").innerHTML=="") {
+			document.getElementById("affichage").innerHTML = JSON.stringify(event.data) ;
+		}
+		else {
+			document.getElementById("affichage").innerHTML += ',' + JSON.stringify(event.data);
+		}
+
 		console.log('Data after change is', event.data);
 	  },
 };
