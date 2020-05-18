@@ -5,5 +5,7 @@ function onQuickFilterChanged() {
 	new agGrid.Grid(document.querySelector('#myGrid'), gridOptions);
 
 document.querySelector('#addRow').addEventListener("click", function() {
-    gridOptions.api.addItems([{}]);
+	gridOptions.api.addItems([{}]);
 });
+
+

@@ -34,17 +34,18 @@ ObjectCellRenderer.prototype.getGui = function () {
 
 function ObjectEditor() {
 	this.data = [];
+	this.confEditor = {
+		data:this.data,
+		type:'default',
+		autocomplete:true,
+		multiple:false,
+	};
 }
 
 ObjectEditor.prototype.init = function (params) {
 	console.log(params);
     this.container = document.createElement('div');
-	this.myDropdown=jSuites.dropdown(this.container, {
-		data:this.data,
-		type:'default',
-		autocomplete:true,
-		multiple:false,
-	});
+	this.myDropdown=jSuites.dropdown(this.container, this.confEditor);
 
 	if (params.value) {
 
@@ -71,7 +72,7 @@ ObjectEditor.prototype.destroy = function () {
 };
 
 ObjectEditor.prototype.isPopup = function () {
-    return true;
+    return true;true
 };
 
 var onKeyDown = function(event) {

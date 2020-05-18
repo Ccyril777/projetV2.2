@@ -6,9 +6,9 @@
 
 <button id='addRow' >Ajouter une ligne</button><br/><br/>
 
-<button type="button" onclick="description()">Cliquez moi</button>
+<button hidden type="button" onclick="description()">Cliquez moi</button>
 <form method="POST">
-<textarea id="affichage" name='Description'></textarea>
+<textarea hidden id="affichage" name='Description'></textarea>
 <button type="submit">Valider</button>
 </form>
 
@@ -30,6 +30,13 @@ function DomEditor() {
 		{ id:'{{ domaine.id }}', name:'{{ domaine.domaineName }}' },
 		{% endfor %}
 	];
+
+	this.confEditor = {
+		data:this.data,
+		type:'default',
+		autocomplete:true,
+		multiple:false,
+	};
 }
 
 DomEditor.prototype = new ObjectEditor();
@@ -42,6 +49,13 @@ function ConfEditor() {
 		{ id:'{{ confidentialite.id }}', name:'{{ confidentialite.confidentialiteName }}' },
 		{% endfor %}
 	];
+
+	this.confEditor = {
+		data:this.data,
+		type:'default',
+		autocomplete:true,
+		multiple:false,
+	};
 }
 
 ConfEditor.prototype = new ObjectEditor();
@@ -54,6 +68,13 @@ function TypoEditor() {
 		{ id:'{{ type.id }}', name:'{{ type.shortName }}' },
 		{% endfor %}
 	];
+
+	this.confEditor = {
+		data:this.data,
+		type:'default',
+		autocomplete:true,
+		multiple:false,
+	};
 }
 
 TypoEditor.prototype = new ObjectEditor();
@@ -61,11 +82,20 @@ TypoEditor.prototype = new ObjectEditor();
 
 <script>
 function SupEditor() {
+
 	this.data = [
 		{% for systeme_information in systeme_informations %}
 		{ id:'{{ systeme_information.id }}', name:'{{ systeme_information.usualName }}' },
 		{% endfor %}
 	];
+
+	this.confEditor = {
+		data:this.data,
+		type:'default',
+		autocomplete:true,
+		multiple:true,
+	};
+
 }
 
 SupEditor.prototype = new ObjectEditor();
@@ -81,26 +111,29 @@ var columns = [
 	{headerName: 'Confidentialité', field: 'confidentialite', sortable: true, filter: true, editable: true, cellRenderer: ObjectCellRenderer,cellEditor: ConfEditor},
     {headerName: 'Typologie MI', field: 'typology', sortable: true, filter: true, editable: true, cellRenderer: ObjectCellRenderer,cellEditor: TypoEditor},
     {headerName: 'Domaine', field: 'domaine', sortable: true, filter: true, editable: true, cellRenderer: ObjectCellRenderer,cellEditor: DomEditor},
-    {headerName: 'SI Support', field: 'si_support', sortable: true, filter: true, editable: true, cellRenderer: ObjectCellRenderer,cellEditor: SupEditor}
+    {headerName: 'SI Support', field: 'si_support', sortable: true, filter: true, editable: true, cellRenderer: ObjectCellRenderer,cellEditor: SupEditor},
 ];
 
 var gridOptions = {
     columnDefs: columns,
-	rowData: [
+	rowData:
+	[
 		{% for systeme_information in systeme_informations %}
-		{id:'{{ systeme_information.id }}',
-		usual_name: '{{ systeme_information.usualName }}',
-		sii_name: '{{ systeme_information.siiName }}',
-        description:'{{ systeme_information.description }}',
-		domaine: {'id':'{{ systeme_information.domaine.id }}', 'val':'{{ systeme_information.domaine.domaineName }}' },
-        confidentialite: {'id':'{{ systeme_information.confidentialite.id }}', 'val':'{{ systeme_information.confidentialite.confidentialiteName }}' },
-		typology: {'id':'{{ systeme_information.type.id }}', 'val':'{{ systeme_information.type.shortName }}' },
-		},
+			{
+			id:'{{ systeme_information.id }}',
+			usual_name: '{{ systeme_information.usualName }}',
+			sii_name: '{{ systeme_information.siiName }}',
+			description:'{{ systeme_information.description }}',
+			domaine: {'id':'{{ systeme_information.domaine.id }}', 'val':'{{ systeme_information.domaine.domaineName }}' },
+			confidentialite: {'id':'{{ systeme_information.confidentialite.id }}', 'val':'{{ systeme_information.confidentialite.confidentialiteName }}' },
+			typology: {'id':'{{ systeme_information.type.id }}', 'val':'{{ systeme_information.type.shortName }}' },
+			si_support:	{'id':'{% for sisupport in systeme_information.SystemeSupport %}{{ sisupport.id }};{% endfor %}', 'val':'{% for sisupport in systeme_information.SystemeSupport %}{{ sisupport.usualName }};{% endfor %}'}
+			},
 		{% endfor %}
 	],
 
 	onCellValueChanged: function(event) {
-		
+
 		if(document.getElementById("affichage").innerHTML=="") {
 			document.getElementById("affichage").innerHTML = JSON.stringify(event.data) ;
 		}

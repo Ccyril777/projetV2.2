@@ -44,10 +44,7 @@ class SystemeInformationController extends AbstractController
     $manager = $this->getDoctrine()->getManager();
     $si = new SystemeInformation();
 
-    echo  "Count = " . $request->request->count() ."<br>";
     $desc = "{\"list\":[" . $request->request->get('Description')."]}";
-
-    echo "Description = " . $desc ."<br>";
 
     if ($request->request->count()>0){
         $object = json_decode($desc);
@@ -56,32 +53,26 @@ class SystemeInformationController extends AbstractController
 
         $si = $systemeInformationRepository->findOneById($rowAgrid->{'id'});
 
-        echo "oldName = " . $si->getUsualName() ."<br>";
-        echo "newName = " . $rowAgrid->{'usual_name'} ."<br>";
         $si->setUsualName($rowAgrid->{'usual_name'});
 
-        echo "oldSiiName = " . $si->getSiiName() ."<br>";
-        echo "newSiiName = " . $rowAgrid->{'sii_name'} ."<br>";
         $si->setSiiName($rowAgrid->{'sii_name'});
 
-        echo "oldDescription = " . $si->getDescription() ."<br>";
-        echo "newDescription = " . $rowAgrid->{'description'} ."<br>";
         $si->setDescription($rowAgrid->{'description'});
 
-        echo "oldConfidentialité = " . $si->getConfidentialite()->getId() ."<br>";
-        echo "newConfidentialité = " . $rowAgrid->{'confidentialite'}->{'id'} ."<br>";
         $newconf = $confidentialiteRepository->findOneById($rowAgrid->{'confidentialite'}->{'id'});
         $si->setConfidentialite($newconf);
 
-        echo "oldDomaine = " . $si->getDomaine()->getId() ."<br>";
-        echo "newDomaine = " . $rowAgrid->{'domaine'}->{'id'} ."<br>";
         $newdomaine = $domaineRepository->findOneById($rowAgrid->{'domaine'}->{'id'});
         $si->setDomaine($newdomaine);
 
-        echo "oldType = " . $si->getType()->getId() ."<br>";
-        echo "newType = " . $rowAgrid->{'typology'}->{'id'} ."<br>";
         $newtype = $typologyMIRepository->findOneById($rowAgrid->{'typology'}->{'id'});
         $si->setType($newtype);
+
+        $this->removeAllSystemeSupport($si);
+        $idList=$rowAgrid->{'si_support'}->{'id'};
+        $idsagrid = explode(';', $idList);
+
+        // {"list":[{"id":"1","usual_name":"Charles","sii_name":"Xavier","description":"Vide","domaine":{"id":"8","val":"Thérèse"},"confidentialite":{"id":"3","val":"De Sousa"},"typology":{"id":"4","val":"Émilie"},"si_support":{"id":"2;5;23","val":"Margaret; Obi; Audrey"}}]}
 
         $manager->persist($si);
         $manager->flush();
@@ -94,6 +85,14 @@ class SystemeInformationController extends AbstractController
             'types' => $typologyMIRepository->findAll(),
             'form'=>$si,
         ]);
+}
+
+public function removeAllSystemeSupport(SystemeInformation $si)
+{
+    foreach ($si->getSystemeSupport() as $sisupport)
+    {
+        $si->removeSystemeSupport($sisupport);
+    }
 }
     /**
      * @Route("/new", name="systeme_information_new", methods={"GET","POST"})
