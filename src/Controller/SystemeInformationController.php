@@ -25,10 +25,10 @@ class SystemeInformationController extends AbstractController
     /**
      * @Route("/", name="systeme_information_index", methods={"GET"})
      */
-    public function index(SystemeInformationRepository $systemeInformationRepository): Response
+    public function index(SystemeInformationRepository $systemeInformationoli): Response
     {
         return $this->render('systeme_information/index.html.twig', [
-            'systeme_informations' => $systemeInformationRepository->findAll(),
+            'systeme_informations' => $systemeInformationoli->findAll(),
         ]);
     }
 
@@ -94,6 +94,7 @@ public function removeAllSystemeSupport(SystemeInformation $si)
         $si->removeSystemeSupport($sisupport);
     }
 }
+
     /**
      * @Route("/new", name="systeme_information_new", methods={"GET","POST"})
      */
