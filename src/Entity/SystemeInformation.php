@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -7,11 +6,14 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ *
  * @ORM\Entity(repositoryClass="App\Repository\SystemeInformationRepository")
  */
 class SystemeInformation
 {
+
     /**
+     *
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -19,44 +21,52 @@ class SystemeInformation
     private $id;
 
     /**
+     *
      * @ORM\Column(type="string", length=255)
      */
     private $usualName;
 
     /**
+     *
      * @ORM\Column(type="string", length=255)
      */
     private $siiName;
 
     /**
+     *
      * @ORM\Column(type="string", length=1500, nullable=true)
      */
     private $description;
 
     /**
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Confidentialite", inversedBy="systemeInformation")
      * @ORM\JoinColumn(nullable=false)
      */
     private $confidentialite;
 
     /**
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Domaine", inversedBy="systemeInformation")
      * @ORM\JoinColumn(nullable=false)
      */
     private $domaine;
 
     /**
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\TypologyMI", inversedBy="systemeInformation")
      * @ORM\JoinColumn(nullable=false)
      */
     private $type;
 
     /**
+     *
      * @ORM\ManyToMany(targetEntity="App\Entity\SystemeInformation", inversedBy="systemeInformation")
      */
     private $SystemeSupport;
 
     /**
+     *
      * @ORM\ManyToMany(targetEntity="App\Entity\SystemeInformation", mappedBy="SystemeSupport")
      */
     private $systemeInformation;
@@ -145,6 +155,7 @@ class SystemeInformation
     }
 
     /**
+     *
      * @return Collection|self[]
      */
     public function getSystemeSupport(): Collection
@@ -154,7 +165,7 @@ class SystemeInformation
 
     public function addSystemeSupport(self $systemeSupport): self
     {
-        if (!$this->SystemeSupport->contains($systemeSupport)) {
+        if (! $this->SystemeSupport->contains($systemeSupport)) {
             $this->SystemeSupport[] = $systemeSupport;
         }
 
@@ -171,6 +182,7 @@ class SystemeInformation
     }
 
     /**
+     *
      * @return Collection|self[]
      */
     public function getSystemeInformation(): Collection
@@ -180,7 +192,7 @@ class SystemeInformation
 
     public function addSystemeInformation(self $systemeInformation): self
     {
-        if (!$this->systemeInformation->contains($systemeInformation)) {
+        if (! $this->systemeInformation->contains($systemeInformation)) {
             $this->systemeInformation[] = $systemeInformation;
             $systemeInformation->addSystemeSupport($this);
         }

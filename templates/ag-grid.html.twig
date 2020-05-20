@@ -5,10 +5,13 @@
 {% block body %}
 
 <button id='addRow' >Ajouter une ligne</button><br/><br/>
+<button onclick="onRemoveSelected()">Supprimer la sélection</button>
 
-<button hidden type="button" onclick="description()">Cliquez moi</button>
+<button type="button" onclick="description()">Cliquez moi</button>
 <form method="POST">
-<textarea hidden id="affichage" name='Description'></textarea>
+<textarea id="affichage" name='Description'></textarea>
+<textarea id="newrow" name="New Row"></textarea>
+<textarea id="deleterow" name="Delete Row"></textarea>
 <button type="submit">Valider</button>
 </form>
 
@@ -129,9 +132,11 @@ var gridOptions = {
 			},
 		{% endfor %}
 	],
+	rowSelection: 'multiple',
+    rowDeselection: true,
 
 	onCellValueChanged: function(event) {
-
+		console.log(event);
 		if(document.getElementById("affichage").innerHTML=="") {
 			document.getElementById("affichage").innerHTML = JSON.stringify(event.data) ;
 		}
