@@ -49,12 +49,21 @@ class SystemeInformationController extends AbstractController
             echo "desc = " . $desc . "<br>";
             $object = json_decode($desc);
             $maliste = $object->{'list'};
-            foreach ($maliste as $rowAgrid) {
-                $si = $systemeInformationRepository->findOneById($rowAgrid->{'id'});
-
-                if ($si == null) {
-                    $si = new SystemeInformation();
+            $idrowmapping = [];
+            foreach ($maliste as $rowAgridComplet) {
+                $rowAgrid = $rowAgridComplet->{'data'};
+                if (!array_key_exists('id', $rowAgrid)) {
+                    echo "Nouveau champ en cours de création à la ligne : " . $rowAgridComplet->{'idrow'} . "<br>";
+                    if (array_key_exists($rowAgridComplet->{'idrow'}, $idrowmapping)) {
+                        $si = $systemeInformationRepository->findOneById($idrowmapping[$rowAgridComplet->{'idrow'}]);
+                    }
+                    
                 }
+                else {
+                    $si = $systemeInformationRepository->findOneById($rowAgrid->{'id'});
+                }
+                
+                
                 if (array_key_exists('usual_name', $rowAgrid)) {
                     $si->setUsualName($rowAgrid->{'usual_name'});
                 } else {
@@ -113,13 +122,18 @@ class SystemeInformationController extends AbstractController
                         $systemeSupport = $systemeInformationRepository->findOneById($monsisupportid);
                         $si->addSystemeSupport($systemeSupport);
 
-                        echo "Nom prénom trouvés : " . $systemeSupport->getSiiName() . $systemeSupport->getUsualName();
+                        echo "Nom prénom trouvés : " . $systemeSupport->getSiiName() . $systemeSupport->getUsualName() . "<br>";
                     }
                 }
+
                 // {"list":[{"id":"1","usual_name":"Charles","sii_name":"Xavier","description":"Vide","domaine":{"id":"8","val":"Thérèse"},"confidentialite":{"id":"3","val":"De Sousa"},"typology":{"id":"4","val":"Émilie"},"si_support":{"id":"2;5;23","val":"Margaret; Obi; Audrey"}}]}
 
                 $manager->persist($si);
                 $manager->flush();
+                if (!array_key_exists('id', $rowAgrid) && array_key_exists($rowAgridComplet->{'idrow'}, $idrowmapping)) {
+                    $idrowmapping[$rowAgridComplet->{'idrow'}] = $si->getId();
+                }
+                
             }
         }
         return $this->render('ag-grid.html.twig', [

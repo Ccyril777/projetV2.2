@@ -9,7 +9,7 @@ function onRemoveSelected() {
 	var selectedData = gridOptions.api.getSelectedRows();
 	console.log("selecteddata = " + selectedData);
 	var res = gridOptions.api.applyTransaction({remove : selectedData });
-	printResult(res);
+	//printResult(res);
 }
 
 var newCount = 1;
@@ -31,4 +31,7 @@ document.querySelector('#addRow').addEventListener("click", function() {
 	gridOptions.api.addItems([ {} ]);
 });
 
-new agGrid.Grid(document.querySelector('#myGrid'), gridOptions);
+document.addEventListener('DOMContentLoaded', function() {
+    var gridDiv = document.querySelector('#myGrid');
+    new agGrid.Grid(gridDiv, gridOptions);
+});
