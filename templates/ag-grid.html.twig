@@ -135,7 +135,7 @@ var gridOptions = {
 
 	onCellValueChanged: function(event) {
 		console.log(event);
-		matransaction = "{\"idrow\":"+event.rowIndex+ ", \"data\":"+ JSON.stringify(event.data) + "}";
+		matransaction = "{\"idrow\":"+event.node.id+", \"operation\": \"addupdate\", \"data\":"+ JSON.stringify(event.data) + "}";
 		if(document.getElementById("affichage").innerHTML=="") {
 			document.getElementById("affichage").innerHTML = matransaction ;
 		}
@@ -145,6 +145,10 @@ var gridOptions = {
 
 		console.log('Data after change is', event.data);
 	  },
+	  onRowDataUpdated:function(event) {
+	  console.log("RowDataUpdated");
+		console.log(event);
+		}
 };
 
 </script>

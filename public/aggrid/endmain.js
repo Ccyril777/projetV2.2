@@ -4,13 +4,38 @@ function onQuickFilterChanged() {
 }
 
 function onRemoveSelected() {
-	addItems();
 	
-	var selectedData = gridOptions.api.getSelectedRows();
-	console.log("selecteddata = " + selectedData);
-	var res = gridOptions.api.applyTransaction({remove : selectedData });
-	//printResult(res);
+	var selectedData = gridOptions.api.getSelectedNodes();
+	console.log(selectedData);
+	for (i = 0; i < selectedData.length; i++){
+			
+		 matransaction = "{\"idrow\":\""+selectedData[i].id+"\", \"operation\": \"delete\",\"data\":"+ JSON.stringify(selectedData[i].data) + "}";
+		 if(document.getElementById("affichage").innerHTML=="") {
+		 document.getElementById("affichage").innerHTML = matransaction ;
+		 }
+		 else {
+		 document.getElementById("affichage").innerHTML += ',' + matransaction;
+		 }
+		
+	}
+	selectedData = gridOptions.api.getSelectedRows();
+	var res = gridOptions.api.applyTransaction({remove : selectedData});
+	return i;
 }
+	
+// matransaction = "{\"idrow\":"+event.node.id+", \"operation\": "addupdate"",
+// \"data\":"+ JSON.stringify(event.data) + "}";
+// if(document.getElementById("affichage").innerHTML=="") {
+// document.getElementById("affichage").innerHTML = matransaction ;
+// }
+// else {
+// document.getElementById("affichage").innerHTML += ',' + matransaction;
+// }
+//
+// console.log('Data after change is', event.data);
+	
+
+	// printResult(res);
 
 var newCount = 1;
 
