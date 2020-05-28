@@ -5,7 +5,7 @@ body {
 }
 
 h1, h2, h3, ul, li, a, button {
-	text-align:center;
+    text-align:center;
 }
 
 p{
@@ -16,10 +16,20 @@ p{
 .banner {
     width: auto;
     height: 25rem;
-    background-image: url('../../public/images/LogoDGA.png');
+    background-image: url('../../public/images/DGA.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+}
+
+.dga {
+    width: 10rem;
+    height: 10rem;
+    background-size: cover;
+}
+
+.img_dga {
+    width: 100%;
 }
 
 .card_connect {

@@ -1,19 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello TestController!{% endblock %}
+{% block title %}Classeur{% endblock %}
 
 {% block body %}
 
-<button id='addRow' >Ajouter une ligne</button><br/><br/>
-<button onclick="onRemoveSelected()">Supprimer la sélection</button>
+{% include 'toolbar/toolbar.html.twig' %}
 
-<button type="button" onclick="description()">Cliquez moi</button>
-<form method="POST">
-<textarea id="affichage" name='Description' cols="100" rows="5"></textarea>
-<button type="submit">Valider</button>
-</form>
-
-<div id="myGrid" style="height: 50rem; width:150rem;" class="ag-theme-balham"></div>
+<div id="myGrid" style="height: 50rem; width:auto;" class="ag-theme-balham"></div>
 
 {% endblock %}
 
@@ -132,6 +125,9 @@ var gridOptions = {
 	],
 	rowSelection: 'multiple',
     rowDeselection: true,
+    rowDragManaged: true,
+  	animateRows: true,
+    sideBar: true,
 
 	onCellValueChanged: function(event) {
 		console.log(event);

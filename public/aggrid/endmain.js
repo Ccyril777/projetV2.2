@@ -22,35 +22,8 @@ function onRemoveSelected() {
 	var res = gridOptions.api.applyTransaction({remove : selectedData});
 	return i;
 }
-	
-// matransaction = "{\"idrow\":"+event.node.id+", \"operation\": "addupdate"",
-// \"data\":"+ JSON.stringify(event.data) + "}";
-// if(document.getElementById("affichage").innerHTML=="") {
-// document.getElementById("affichage").innerHTML = matransaction ;
-// }
-// else {
-// document.getElementById("affichage").innerHTML += ',' + matransaction;
-// }
-//
-// console.log('Data after change is', event.data);
-	
-
-	// printResult(res);
 
 var newCount = 1;
-
-function createNewRowData() {
-  var newData = {
-    usual_name: 'Toyota ' + newCount,
-    
-  };
-  newCount++;
-  return newData;
-}
-function addItems() {
-	  var newItems = [createNewRowData(), createNewRowData(), createNewRowData()];
-	  var res = gridOptions.api.applyTransaction({ add: newItems });
-}
 
 document.querySelector('#addRow').addEventListener("click", function() {
 	gridOptions.api.addItems([ {} ]);

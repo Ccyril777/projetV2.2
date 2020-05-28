@@ -18,18 +18,6 @@ $newrows[1] = {
 	'id' : 0,
 	'nom' : 'olivier'
 };
-console.log('Newrow = ' + toArea($newrows));
-$newrows[2] = {
-	'id' : 1,
-	'nom' : 'cyril'
-};
-console.log('Newrow = ' + toArea($newrows));
-$newrows[2] = {
-	'id' : 1,
-	'nom' : 'canoine',
-	'techno' : 'symphony'
-};
-console.log('Newrow = ' + toArea($newrows));
 
 function ObjectCellRenderer() {
 }

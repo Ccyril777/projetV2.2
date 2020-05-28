@@ -46,7 +46,6 @@ class SystemeInformationController extends AbstractController
         $desc = "{\"list\":[" . $request->request->get('Description') . "]}";
 
         if ($request->request->count() > 0) {
-            echo "desc = " . $desc . "<br>";
             $object = json_decode($desc);
             $maliste = $object->{'list'};
             $idrowmapping = [];
@@ -54,9 +53,9 @@ class SystemeInformationController extends AbstractController
                 $ops = $rowAgridComplet->{'operation'};
                 $rowAgrid = $rowAgridComplet->{'data'};
                 if ($ops == "addupdate") {
-                    
+
                     if (! array_key_exists('id', $rowAgrid)) {
-                        echo "Nouveau champ en cours de création à la ligne : " . $rowAgridComplet->{'idrow'} . "<br>";
+                        // echo "Nouveau champ en cours de création à la ligne : " . $rowAgridComplet->{'idrow'} . "<br>";
                         if (array_key_exists($rowAgridComplet->{'idrow'}, $idrowmapping)) {
                             $si = $systemeInformationRepository->findOneById($idrowmapping[$rowAgridComplet->{'idrow'}]);
                         }
@@ -86,7 +85,7 @@ class SystemeInformationController extends AbstractController
                     } else {
                         $confs = $confidentialiteRepository->findAll();
                         $conf = $confs[1];
-                        echo "conf = " . $conf->getConfidentialiteName() . "<br>";
+                        // echo "conf = " . $conf->getConfidentialiteName() . "<br>";
                         $si->setConfidentialite($conf);
                     }
 
@@ -96,7 +95,7 @@ class SystemeInformationController extends AbstractController
                     } else {
                         $doms = $domaineRepository->findAll();
                         $dom = $doms[1];
-                        echo "dom = " . $dom->getDomaineName() . "<br>";
+                        // echo "dom = " . $dom->getDomaineName() . "<br>";
                         $si->setDomaine($dom);
                     }
 
@@ -106,7 +105,7 @@ class SystemeInformationController extends AbstractController
                     } else {
                         $types = $typologyMIRepository->findAll();
                         $type = $types[1];
-                        echo "type = " . $type->getShortName() . "<br>";
+                        // echo "type = " . $type->getShortName() . "<br>";
                         $si->setType($type);
                     }
 
@@ -117,12 +116,12 @@ class SystemeInformationController extends AbstractController
                         echo "Liste des Ids : " . $idList . "<br>";
                         $idsagrid = explode(';', $idList);
                         foreach ($idsagrid as $monsisupportid) {
-                            echo "Id en cours de traitement : " . $monsisupportid . "<br>";
+                            // echo "Id en cours de traitement : " . $monsisupportid . "<br>";
 
                             $systemeSupport = $systemeInformationRepository->findOneById($monsisupportid);
                             $si->addSystemeSupport($systemeSupport);
 
-                            echo "Nom prénom trouvés : " . $systemeSupport->getSiiName() . $systemeSupport->getUsualName() . "<br>";
+                            // echo "Nom prénom trouvés : " . $systemeSupport->getSiiName() . $systemeSupport->getUsualName() . "<br>";
                         }
                     }
 
@@ -133,17 +132,16 @@ class SystemeInformationController extends AbstractController
                     if (! array_key_exists('id', $rowAgrid) && array_key_exists($rowAgridComplet->{'idrow'}, $idrowmapping)) {
                         $idrowmapping[$rowAgridComplet->{'idrow'}] = $si->getId();
                     }
-                }
-                elseif ($ops == "delete"){
+                } elseif ($ops == "delete") {
                     if (! array_key_exists('id', $rowAgrid)) {
-                        echo "Nouveau champ en cours de création à la ligne : " . $rowAgridComplet->{'idrow'} . "<br>";
+                        // echo "Nouveau champ en cours de création à la ligne : " . $rowAgridComplet->{'idrow'} . "<br>";
                         if (array_key_exists($rowAgridComplet->{'idrow'}, $idrowmapping)) {
                             $si = $systemeInformationRepository->findOneById($idrowmapping[$rowAgridComplet->{'idrow'}]);
                         }
                     } else {
                         $si = $systemeInformationRepository->findOneById($rowAgrid->{'id'});
                     }
-                    
+
                     $entityManager = $this->getDoctrine()->getManager();
                     $entityManager->remove($si);
                     $entityManager->flush();
