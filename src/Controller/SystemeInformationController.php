@@ -38,13 +38,17 @@ class SystemeInformationController extends AbstractController
      *
      * @Route("/aggridview", name="aggridview", methods={"GET","POST"})
      */
+    //Symfony injecte des dépendances afin d'élaborer une réponse. 
     public function aggrid(SystemeInformationRepository $systemeInformationRepository, DomaineRepository $domaineRepository, ConfidentialiteRepository $confidentialiteRepository, TypologyMIRepository $typologyMIRepository, Request $request): response
     {
+        //Récupération du Manager, grâce au SystemeInformationController, qui se trouve dans Doctrine; c'est une récupération par héritage.
         $manager = $this->getDoctrine()->getManager();
         $si = new SystemeInformation();
 
+        //Mise à jour de la base de données
         $desc = "{\"list\":[" . $request->request->get('Description') . "]}";
 
+        // Condition permettant de récupérer l'ensemble des informations, si elles existent ou non, et les actiosn à entreprendre si ce n'est pas le cas.
         if ($request->request->count() > 0) {
             $object = json_decode($desc);
             $maliste = $object->{'list'};
@@ -53,7 +57,7 @@ class SystemeInformationController extends AbstractController
                 $ops = $rowAgridComplet->{'operation'};
                 $rowAgrid = $rowAgridComplet->{'data'};
                 if ($ops == "addupdate") {
-
+                    // Condition permettant de récupérer les ID
                     if (! array_key_exists('id', $rowAgrid)) {
                         // echo "Nouveau champ en cours de création à la ligne : " . $rowAgridComplet->{'idrow'} . "<br>";
                         if (array_key_exists($rowAgridComplet->{'idrow'}, $idrowmapping)) {
@@ -62,23 +66,25 @@ class SystemeInformationController extends AbstractController
                     } else {
                         $si = $systemeInformationRepository->findOneById($rowAgrid->{'id'});
                     }
-
+                    // Condition permettant de récupérer les noms usuels, et de les modifier
                     if (array_key_exists('usual_name', $rowAgrid)) {
                         $si->setUsualName($rowAgrid->{'usual_name'});
                     } else {
                         $si->setUsualName('');
                     }
-
+                    // Condition permettant de récupérer les noms SII, et de les modifier
                     if (array_key_exists('sii_name', $rowAgrid)) {
                         $si->setSiiName($rowAgrid->{'sii_name'});
                     } else {
                         $si->setSiiName('');
                     }
+                    // Condition permettant de récupérer les descriptions, et de les modifier
                     if (array_key_exists('description', $rowAgrid)) {
                         $si->setDescription($rowAgrid->{'description'});
                     } else {
                         $si->setDescription('');
                     }
+                    // Condition permettant de récupérer les confidentiatlités. S'il n'y en a pas, c'est le premier inscrit dans la base de données qui est affiché. 
                     if (array_key_exists('confidentialite', $rowAgrid)) {
                         $newconf = $confidentialiteRepository->findOneById($rowAgrid->{'confidentialite'}->{'id'});
                         $si->setConfidentialite($newconf);
@@ -88,7 +94,7 @@ class SystemeInformationController extends AbstractController
                         // echo "conf = " . $conf->getConfidentialiteName() . "<br>";
                         $si->setConfidentialite($conf);
                     }
-
+                    // Condition permettant de récupérer les domaines. S'il n'y en a pas, c'est le premier inscrit dans la base de données qui est affiché.
                     if (array_key_exists('domaine', $rowAgrid)) {
                         $newdomaine = $domaineRepository->findOneById($rowAgrid->{'domaine'}->{'id'});
                         $si->setDomaine($newdomaine);
@@ -98,7 +104,7 @@ class SystemeInformationController extends AbstractController
                         // echo "dom = " . $dom->getDomaineName() . "<br>";
                         $si->setDomaine($dom);
                     }
-
+                    // Condition permettant de récupérer les Typologies. S'il n'y en a pas, c'est le premier inscrit dans la base de données qui est affiché
                     if (array_key_exists('typology', $rowAgrid)) {
                         $newtype = $typologyMIRepository->findOneById($rowAgrid->{'typology'}->{'id'});
                         $si->setType($newtype);
@@ -108,7 +114,7 @@ class SystemeInformationController extends AbstractController
                         // echo "type = " . $type->getShortName() . "<br>";
                         $si->setType($type);
                     }
-
+                    // Condition permettant de récupérer les supports SI.
                     if (array_key_exists('si_support', $rowAgrid)) {
                         $this->removeAllSystemeSupport($si);
                         $idList = $rowAgrid->{'si_support'}->{'id'};
@@ -125,13 +131,12 @@ class SystemeInformationController extends AbstractController
                         }
                     }
 
-                    // {"list":[{"id":"1","usual_name":"Charles","sii_name":"Xavier","description":"Vide","domaine":{"id":"8","val":"Thérèse"},"confidentialite":{"id":"3","val":"De Sousa"},"typology":{"id":"4","val":"Émilie"},"si_support":{"id":"2;5;23","val":"Margaret; Obi; Audrey"}}]}
-
                     $manager->persist($si);
                     $manager->flush();
                     if (! array_key_exists('id', $rowAgrid) && array_key_exists($rowAgridComplet->{'idrow'}, $idrowmapping)) {
                         $idrowmapping[$rowAgridComplet->{'idrow'}] = $si->getId();
                     }
+                    //Suppression des données
                 } elseif ($ops == "delete") {
                     if (! array_key_exists('id', $rowAgrid)) {
                         // echo "Nouveau champ en cours de création à la ligne : " . $rowAgridComplet->{'idrow'} . "<br>";
@@ -156,7 +161,7 @@ class SystemeInformationController extends AbstractController
             'form' => $si
         ]);
     }
-
+    //fonction permettant de supprimer toutes les données enregistrées dans le SystemeSupport, afin de pouvoir les modifier. 
     public function removeAllSystemeSupport(SystemeInformation $si)
     {
         foreach ($si->getSystemeSupport() as $sisupport) {

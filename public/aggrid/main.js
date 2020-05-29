@@ -1,5 +1,3 @@
-console.log('Hello');
-
 function toArea(tab) {
 	s = "";
 	for (e in tab) {
@@ -109,5 +107,5 @@ var onKeyDown = function(event) {
 
 function description() {
 
-	document.getElementById("affichage").innerHTML += "toto ";
+	document.getElementById("affichage").innerHTML += "";
 }

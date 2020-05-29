@@ -5,7 +5,7 @@
 {% block body %}
 
 {% include 'toolbar/toolbar.html.twig' %}
-
+<!--Création du tableau aggrid-->
 <div id="myGrid" style="height: 50rem; width:auto;" class="ag-theme-balham"></div>
 
 {% endblock %}
@@ -16,6 +16,7 @@
 <script src="{{ asset('aggrid/main.js') }}"></script>
 
 <script>
+// Fonction permettant à Ag-Grid de récupérer les domaines, depuis la base de données
 function DomEditor() {
 	this.data = [
 		{% for domaine in domaines %}
@@ -35,6 +36,7 @@ DomEditor.prototype = new ObjectEditor();
 </script>
 
 <script>
+// Fonction permettant à Ag-Grid de récupérer les confidentalités, depuis la base de données
 function ConfEditor() {
 	this.data = [
 		{% for confidentialite in confidentialites %}
@@ -54,6 +56,7 @@ ConfEditor.prototype = new ObjectEditor();
 </script>
 
 <script>
+// Fonction permettant à Ag-Grid de récupérer les typologies, depuis la base de données
 function TypoEditor() {
 	this.data = [
 		{% for type in types %}
@@ -74,7 +77,7 @@ TypoEditor.prototype = new ObjectEditor();
 
 <script>
 function SupEditor() {
-
+// Fonction permettant à Ag-Grid de récupérer les supports SI, qui n'est autre que la liste des noms usuels, depuis la base de données
 	this.data = [
 		{% for systeme_information in systeme_informations %}
 		{ id:'{{ systeme_information.id }}', name:'{{ systeme_information.usualName }}' },
@@ -94,7 +97,7 @@ SupEditor.prototype = new ObjectEditor();
 </script>
 
 <script>
-
+// Création du tableau, et incorporation des données dans une grille. 
 var columns = [
 	{headerName: 'ID', field: 'id', sortable: true, filter: true},
 	{headerName: 'Nom usuel', field: 'usual_name', sortable: true, filter: true, editable: true},
@@ -129,6 +132,7 @@ var gridOptions = {
   	animateRows: true,
     sideBar: true,
 
+// Fonction permettant de prendre en compte la requête et de la convertir en JSON
 	onCellValueChanged: function(event) {
 		console.log(event);
 		matransaction = "{\"idrow\":"+event.node.id+", \"operation\": \"addupdate\", \"data\":"+ JSON.stringify(event.data) + "}";
