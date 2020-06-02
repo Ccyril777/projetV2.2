@@ -38,83 +38,98 @@ class SystemeInformationController extends AbstractController
      *
      * @Route("/aggridview", name="aggridview", methods={"GET","POST"})
      */
-    //Symfony injecte des dépendances afin d'élaborer une réponse. 
+    // Symfony injecte des dépendances afin d'élaborer une réponse.
     public function aggrid(SystemeInformationRepository $systemeInformationRepository, DomaineRepository $domaineRepository, ConfidentialiteRepository $confidentialiteRepository, TypologyMIRepository $typologyMIRepository, Request $request): response
     {
-        //Récupération du Manager, grâce au SystemeInformationController, qui se trouve dans Doctrine; c'est une récupération par héritage.
+        // Récupération du Manager, grâce au SystemeInformationController, qui se trouve dans Doctrine; c'est une récupération par héritage.
         $manager = $this->getDoctrine()->getManager();
-        $si = new SystemeInformation();
 
-        //Mise à jour de la base de données
-        $desc = "{\"list\":[" . $request->request->get('Description') . "]}";
-
-        // Condition permettant de récupérer l'ensemble des informations, si elles existent ou non, et les actiosn à entreprendre si ce n'est pas le cas.
+        // Si la requête n'est pas vide
+        // PS : La requête est vide lorsque l'on charge le path pour la première fois.
         if ($request->request->count() > 0) {
+            //
+            $si = new SystemeInformation();
+            // Recontistution d'une chaîne de caractère en format JSON à partir de la requête dont l'élément 'Description' n'est qu'un fragment de JSON,
+            // afin de pouvoir convertir la chaîne de caractère en objet.
+            $desc = "{\"list\":[" . $request->request->get('Description') . "]}";
+            // Transformation d'une chaîne de caractères en format JSON en un objet.
             $object = json_decode($desc);
+            // Récupération d'un tableau d'objet. Chacun de ces objets correspond à un fragment JSON.
+            // Il représente une action unitaire réaliser par l'utilisateur dans le tableau AG-Grid
             $maliste = $object->{'list'};
+            // Le mapping est un procédé permettant de définir la correspondance entre deux modèles de données.
+            // L'accès aux données se fait à travers les requêtes SQL, fortement typées selon la structure des données.
+            // Le mapping permet aux utilisateurs d'accéder aux données à travers un ensemble de fonctions
+            // sans se soucier de la structures des bases de données.
             $idrowmapping = [];
+            // Un foreach fournit une façon simple de parcourir les tableaux. Cela ne fonctionne que pour le tableaux et les obljets.
+            // Cela émet une erreur si l'on tente de l'utiliser sur une variable d'un autre type.
             foreach ($maliste as $rowAgridComplet) {
                 $ops = $rowAgridComplet->{'operation'};
                 $rowAgrid = $rowAgridComplet->{'data'};
                 if ($ops == "addupdate") {
-                    // Condition permettant de récupérer les ID
+                    // Vérifie si la clef ID n'existe pas dans le tableau
                     if (! array_key_exists('id', $rowAgrid)) {
-                        // echo "Nouveau champ en cours de création à la ligne : " . $rowAgridComplet->{'idrow'} . "<br>";
+                        // Vérifie si une clef n'existe pas dans le tableau
                         if (array_key_exists($rowAgridComplet->{'idrow'}, $idrowmapping)) {
                             $si = $systemeInformationRepository->findOneById($idrowmapping[$rowAgridComplet->{'idrow'}]);
                         }
                     } else {
+                        // Si la clef existe dans le tableau, on retourne tous les ID de la base de données.
                         $si = $systemeInformationRepository->findOneById($rowAgrid->{'id'});
                     }
-                    // Condition permettant de récupérer les noms usuels, et de les modifier
+                    // Vérifie si la clef usual_name existe dans un tableau
                     if (array_key_exists('usual_name', $rowAgrid)) {
                         $si->setUsualName($rowAgrid->{'usual_name'});
                     } else {
+                        // S'il n'y a pas de données, la cellule est vide.
                         $si->setUsualName('');
                     }
-                    // Condition permettant de récupérer les noms SII, et de les modifier
+                    // Vérifie si la clef sii_name existe dans le tableau
                     if (array_key_exists('sii_name', $rowAgrid)) {
                         $si->setSiiName($rowAgrid->{'sii_name'});
                     } else {
+                        // S'il n'y a pas de données, la cellule est vide.
                         $si->setSiiName('');
                     }
-                    // Condition permettant de récupérer les descriptions, et de les modifier
+                    // Vérifie si la clef description existe dans le tableau
                     if (array_key_exists('description', $rowAgrid)) {
                         $si->setDescription($rowAgrid->{'description'});
                     } else {
+                        // S'il n'y a pas de données, la cellule est vide.
                         $si->setDescription('');
                     }
-                    // Condition permettant de récupérer les confidentiatlités. S'il n'y en a pas, c'est le premier inscrit dans la base de données qui est affiché. 
+                    // Vérifie si la clef confidentialite existe dans le tableau
                     if (array_key_exists('confidentialite', $rowAgrid)) {
                         $newconf = $confidentialiteRepository->findOneById($rowAgrid->{'confidentialite'}->{'id'});
                         $si->setConfidentialite($newconf);
                     } else {
+                        // S'il n'y en a pas, c'est le premier inscrit dans la base de données qui est affiché.
                         $confs = $confidentialiteRepository->findAll();
                         $conf = $confs[1];
-                        // echo "conf = " . $conf->getConfidentialiteName() . "<br>";
                         $si->setConfidentialite($conf);
                     }
-                    // Condition permettant de récupérer les domaines. S'il n'y en a pas, c'est le premier inscrit dans la base de données qui est affiché.
+                    // Vérifie si la clef domaine existe dans le tableau
                     if (array_key_exists('domaine', $rowAgrid)) {
                         $newdomaine = $domaineRepository->findOneById($rowAgrid->{'domaine'}->{'id'});
                         $si->setDomaine($newdomaine);
                     } else {
+                        // S'il n'y en a pas, c'est le premier inscrit dans la base de données qui est affiché.
                         $doms = $domaineRepository->findAll();
                         $dom = $doms[1];
-                        // echo "dom = " . $dom->getDomaineName() . "<br>";
                         $si->setDomaine($dom);
                     }
-                    // Condition permettant de récupérer les Typologies. S'il n'y en a pas, c'est le premier inscrit dans la base de données qui est affiché
+                    // Vérifie si la clef typologie existe dans le tableau
                     if (array_key_exists('typology', $rowAgrid)) {
                         $newtype = $typologyMIRepository->findOneById($rowAgrid->{'typology'}->{'id'});
                         $si->setType($newtype);
                     } else {
+                        // S'il n'y en a pas, c'est le premier inscrit dans la base de données qui est affiché
                         $types = $typologyMIRepository->findAll();
                         $type = $types[1];
-                        // echo "type = " . $type->getShortName() . "<br>";
                         $si->setType($type);
                     }
-                    // Condition permettant de récupérer les supports SI.
+                    // Vérifie si la clef si_support existe dans le tableau.
                     if (array_key_exists('si_support', $rowAgrid)) {
                         $this->removeAllSystemeSupport($si);
                         $idList = $rowAgrid->{'si_support'}->{'id'};
@@ -122,24 +137,23 @@ class SystemeInformationController extends AbstractController
                         echo "Liste des Ids : " . $idList . "<br>";
                         $idsagrid = explode(';', $idList);
                         foreach ($idsagrid as $monsisupportid) {
-                            // echo "Id en cours de traitement : " . $monsisupportid . "<br>";
 
                             $systemeSupport = $systemeInformationRepository->findOneById($monsisupportid);
                             $si->addSystemeSupport($systemeSupport);
-
-                            // echo "Nom prénom trouvés : " . $systemeSupport->getSiiName() . $systemeSupport->getUsualName() . "<br>";
                         }
                     }
-
+                    // Cette opération a pour effet de rendre les données persistantes
                     $manager->persist($si);
+                    // Met à jour la base à partir des objets signalés à Doctrine
+                    // Tant qu'elle n'est pas appellée, rien n'est modifié en base.
                     $manager->flush();
+                    //
                     if (! array_key_exists('id', $rowAgrid) && array_key_exists($rowAgridComplet->{'idrow'}, $idrowmapping)) {
                         $idrowmapping[$rowAgridComplet->{'idrow'}] = $si->getId();
                     }
-                    //Suppression des données
+                    // Suppression des données
                 } elseif ($ops == "delete") {
                     if (! array_key_exists('id', $rowAgrid)) {
-                        // echo "Nouveau champ en cours de création à la ligne : " . $rowAgridComplet->{'idrow'} . "<br>";
                         if (array_key_exists($rowAgridComplet->{'idrow'}, $idrowmapping)) {
                             $si = $systemeInformationRepository->findOneById($idrowmapping[$rowAgridComplet->{'idrow'}]);
                         }
@@ -152,16 +166,18 @@ class SystemeInformationController extends AbstractController
                     $entityManager->flush();
                 }
             }
-        }
+        } else {}
+        // SystemeInformationController nous renvoi vers notre page HTML généré par le Renderer Symfony, et créé le contexte de génération de Twig,
+        // en injectant les informations récupérées par les Repository.
         return $this->render('ag-grid.html.twig', [
             'systeme_informations' => $systemeInformationRepository->findAll(),
             'domaines' => $domaineRepository->findAll(),
             'confidentialites' => $confidentialiteRepository->findAll(),
-            'types' => $typologyMIRepository->findAll(),
-            'form' => $si
+            'types' => $typologyMIRepository->findAll()
         ]);
     }
-    //fonction permettant de supprimer toutes les données enregistrées dans le SystemeSupport, afin de pouvoir les modifier. 
+
+    // fonction permettant de supprimer toutes les données enregistrées dans le SystemeSupport, afin de pouvoir les modifier.
     public function removeAllSystemeSupport(SystemeInformation $si)
     {
         foreach ($si->getSystemeSupport() as $sisupport) {
