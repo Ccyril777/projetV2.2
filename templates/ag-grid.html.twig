@@ -3,8 +3,19 @@
 {% block title %}Classeur{% endblock %}
 
 {% block body %}
-
-{% include 'toolbar/toolbar.html.twig' %}
+		<div>
+            <a class1="tool" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              OUTILS
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <button class="dropdown-item" id='addRow'>Ajouter une ligne</button>
+              <button class="dropdown-item" onclick="onRemoveSelected()">Supprimer la sélection</button>
+             <form method="POST">
+                <textarea hidden id="affichage" name='Description' cols="100" rows="5"></textarea>
+                <button class="dropdown-item" type="submit"><img src="{{ asset('/images/save.png')}}"> Enregistrer</button>
+            </form>
+            </div>
+		</div>
 <!--Création du tableau aggrid-->
 <div id="myGrid" style="height: 50rem; width:auto;" class="ag-theme-balham"></div>
 

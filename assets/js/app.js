@@ -12,5 +12,3 @@ require ('../css/app.scss');
 //import $ from 'jquery';
 require('bootstrap');
 require('jquery');
-
-console.log('Hello Webpack Encore! Edit me in assets/js/app.js');

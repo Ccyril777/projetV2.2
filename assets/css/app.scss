@@ -4,8 +4,9 @@ body {
     background-color: white;
 }
 
-h1, h2, h3, ul, li, a, button {
+h1, h2, h3, ul, li, button {
     text-align:center;
+    padding : 5 rem;
 }
 
 p{
@@ -48,4 +49,8 @@ p{
     margin-left: 15px;
     box-shadow: 0 0.2rem 0.3rem -0.2rem gray;
     border-radius: 0.2rem;
+}
+
+.tool {
+	position:fixed;
 }
